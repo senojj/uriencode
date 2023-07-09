@@ -59,7 +59,6 @@ public class UriEncoderTest {
 
     @Test
     void encodesMixedCharacters() {
-        String subject = "2=1+1";
-        assertEquals("2%3D1%2B1", UriEncoder.encode("2=1+1", StandardCharsets.UTF_8));
+        assertEquals("2%3D1%C2%B11", UriEncoder.encode("2=1±1", StandardCharsets.UTF_8));
     }
 }
