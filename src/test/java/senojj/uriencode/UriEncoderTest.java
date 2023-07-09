@@ -34,6 +34,8 @@ public class UriEncoderTest {
         someReservedCharacters = new HashMap<>();
         someReservedCharacters.put("+", "%2B");
         someReservedCharacters.put("=", "%3D");
+        someReservedCharacters.put("?", "%3F");
+        someReservedCharacters.put("{", "%7B");
     }
 
     @Test
@@ -48,5 +50,11 @@ public class UriEncoderTest {
         for (Map.Entry<String, String> entry : someReservedCharacters.entrySet()) {
             assertEquals(entry.getValue(), UriEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
         }
+    }
+
+    @Test
+    void encodesMixedCharacters() {
+        String subject = "2=1+1";
+        assertEquals("2%3D1%2B1", UriEncoder.encode("2=1+1", StandardCharsets.UTF_8));
     }
 }
