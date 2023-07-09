@@ -36,6 +36,11 @@ public class UriEncoderTest {
         someReservedCharacters.put("=", "%3D");
         someReservedCharacters.put("?", "%3F");
         someReservedCharacters.put("{", "%7B");
+        someReservedCharacters.put("@", "%40");
+        someReservedCharacters.put("&", "%26");
+        someReservedCharacters.put("©", "%C2%A9");
+        someReservedCharacters.put("(", "%28");
+        someReservedCharacters.put("®", "%C2%AE");
     }
 
     @Test
