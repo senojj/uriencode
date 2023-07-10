@@ -13,6 +13,8 @@ import java.util.Map;
 public class UriEncoderTest {
     static List<String> unreservedCharacters;
     static Map<String, String> someReservedCharacters;
+    static Map<String, String> someMultibyteCharacters;
+    static Map<String, String> someSurrogatePairs;
 
     static {
         unreservedCharacters = new ArrayList<>();
@@ -38,9 +40,14 @@ public class UriEncoderTest {
         someReservedCharacters.put("{", "%7B");
         someReservedCharacters.put("@", "%40");
         someReservedCharacters.put("&", "%26");
-        someReservedCharacters.put("©", "%C2%A9");
         someReservedCharacters.put("(", "%28");
-        someReservedCharacters.put("®", "%C2%AE");
+
+        someMultibyteCharacters = new HashMap<>();
+        someMultibyteCharacters.put("©", "%C2%A9");
+        someMultibyteCharacters.put("®", "%C2%AE");
+
+        someSurrogatePairs = new HashMap<>();
+        someSurrogatePairs.put("\uD83D\uDE03", "%F0%9F%98%83");
     }
 
     @Test
@@ -58,7 +65,16 @@ public class UriEncoderTest {
     }
 
     @Test
-    void encodesMixedCharacters() {
-        assertEquals("2%3D1%C2%B11", UriEncoder.encode("2=1±1", StandardCharsets.UTF_8));
+    void encodesMultibyteCharacters() {
+        for (Map.Entry<String, String> entry : someMultibyteCharacters.entrySet()) {
+            assertEquals(entry.getValue(), UriEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
+        }
+    }
+
+    @Test
+    void encodesSurrogatePairs() {
+        for (Map.Entry<String, String> entry : someSurrogatePairs.entrySet()) {
+            assertEquals(entry.getValue(), UriEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
+        }
     }
 }
