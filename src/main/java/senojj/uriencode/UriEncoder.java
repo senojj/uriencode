@@ -6,6 +6,7 @@ import java.util.BitSet;
 import java.util.Objects;
 
 public class UriEncoder {
+    static final String upperhex = "0123456789ABCDEF";
     static BitSet unreservedCharacters;
 
     static {
@@ -27,23 +28,12 @@ public class UriEncoder {
         unreservedCharacters.set('~');
     }
 
-    static boolean isHighSurrogate(int c) {
-        return (c >= 0xD800 && c <= 0xDBFF);
-    }
-
-    static boolean isLowSurrogate(int c) {
-        return (c >= 0xDC00 && c <= 0xDFFF);
-    }
-
     static char toChar(int digit) {
-        if (digit < 10) {
-            return (char) ('0' + digit);
-        }
-        return (char) ('A' - 10 + digit);
+        return upperhex.charAt(digit);
     }
 
     static void toHex(StringBuilder out, byte b) {
-        char ch = toChar((b >> 4) & 0xF);
+        char ch = toChar(b >> 4 & 0xF);
         out.append(ch);
         ch = toChar(b & 0xF);
         out.append(ch);
@@ -59,22 +49,13 @@ public class UriEncoder {
             int c = s.charAt(i);
 
             if (unreservedCharacters.get(c)) {
-                out.append((char)c);
+                out.append((char) c);
                 i++;
                 continue;
             }
 
             do {
                 charArrayWriter.write(c);
-
-                if (isHighSurrogate(c) && (i + 1) < s.length()) {
-                    int d = s.charAt(i + 1);
-
-                    if (isLowSurrogate(d)) {
-                        charArrayWriter.write(d);
-                        i++;
-                    }
-                }
                 i++;
             } while (i < s.length() && !unreservedCharacters.get((c = s.charAt(i))));
 
