@@ -6,7 +6,7 @@ import java.util.BitSet;
 import java.util.Objects;
 
 public class UriEncoder {
-    static final String upperhex = "0123456789ABCDEF";
+    static final char[] upperhex = "0123456789ABCDEF".toCharArray();
     static BitSet unreservedCharacters;
 
     static {
@@ -28,14 +28,10 @@ public class UriEncoder {
         unreservedCharacters.set('~');
     }
 
-    static char toChar(int digit) {
-        return upperhex.charAt(digit);
-    }
-
     static void toHex(StringBuilder out, byte b) {
-        char ch = toChar(b >> 4 & 0xF);
+        char ch = upperhex[(b >> 4) & 0xF];
         out.append(ch);
-        ch = toChar(b & 0xF);
+        ch = upperhex[b & 0xF];
         out.append(ch);
     }
 
